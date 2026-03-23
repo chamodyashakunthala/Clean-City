@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CleanCity — Report Garbage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #1a7a4a;
+      --green-light: #25a863;
+      --green-pale: #e8f7ef;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --dark: #0f1a12;
+      --text: #1c2b20;
+      --muted: #5a7060;
+      --border: #c8e0d0;
+      --surface: #f4fbf6;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+  
+    .navbar {
+    background: linear-gradient(90deg, #11322b, #0b352c);
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.navbar h2 {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.navbar h2:hover {
+    transform: scale(1.05);
+}
+
+.navbar a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.navbar a:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+}
+
+/* MOBILE NAVBAR */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 15px 20px;
+    }
+
+    .navbar div {
+        margin-top: 10px;
+    }
+
+    .navbar a {
+        display: block;
+        margin: 8px 0;
+        text-align: center;
+    }
+}
+    .video-section {
+    width: 100%;
+    text-align: center;
+    background: #efebeb;
+    padding: 80px 0;
+}
+
+.video-section video {
+    width: 100%;
+    max-width: 900px;
+    border-radius: 10px;
+}
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo span { color: var(--green-light); }
+
+    .status-pill {
+      background: rgba(37,168,99,0.15);
+      border: 1px solid rgba(37,168,99,0.3);
+      color: var(--green-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green-light);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--dark);
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(37,168,99,0.15) 0%, transparent 70%);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(37,168,99,0.12);
+      border: 1px solid rgba(37,168,99,0.25);
+      color: var(--green-light);
+      padding: 0.3rem 1rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--green-light);
+    }
+
+    .hero p {
+      color: rgba(255,255,255,0.55);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      position: relative;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--white);
+    }
+
+    .hero-stat-label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    /* ── TRACK REPORT ── */
+    .track-section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .track-section input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .track-section input:focus { border-color: var(--green); }
+
+    .btn-track {
+      background: var(--dark);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      padding: 0.65rem 1.2rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .btn-track:hover { background: var(--green); }
+
+    .track-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      display: none;
+    }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 32px rgba(15,26,18,0.06);
+    }
+
+    .form-header {
+      background: linear-gradient(135deg, var(--green) 0%, #0d5c35 100%);
+      padding: 1.75rem 2rem;
+      color: white;
+    }
+
+    .form-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .form-header p {
+      font-size: 0.85rem;
+      opacity: 0.75;
+    }
+
+    form {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.45rem;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--green);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(26,122,74,0.1);
+    }
+
+    .field textarea { resize: vertical; min-height: 100px; }
+
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+
+    .type-btn {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--surface);
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .type-btn .icon { font-size: 1.2rem; display: block; margin-bottom: 0.25rem; }
+
+    .type-btn:hover {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-pale);
+    }
+
+    .type-btn.active {
+      border-color: var(--green);
+      background: var(--green-pale);
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .hidden-type { display: none; }
+
+    /* Image upload */
+    .image-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface);
+    }
+
+    .image-upload-area:hover {
+      border-color: var(--green);
+      background: var(--green-pale);
+    }
+
+    .image-upload-area .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .image-upload-area p { font-size: 0.85rem; color: var(--muted); }
+
+    #imagePreview { display: none; margin-top: 0.75rem; }
+    #imagePreview img { max-height: 150px; border-radius: 8px; }
+
+    /* Submit button */
+    .btn-submit {
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,122,74,0.35); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--dark);
+      color: var(--white);
+      padding: 1rem 1.5rem;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      z-index: 999;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { border-left: 4px solid var(--green-light); }
+    .toast.error { border-left: 4px solid var(--red); }
+
+    /* ── SUCCESS OVERLAY ── */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,26,18,0.85);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .success-overlay.show { display: flex; }
+
+    .success-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 2.5rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .success-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .success-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .success-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+
+    .report-id-display {
+      background: var(--green-pale);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-new {
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1.5rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    /* ── FOOTER ── */
+   .footer {
+    background: #1f2d3d;
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.footer input, .footer textarea {
+    width: 60%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: none;
+}
+
+.footer button {
+    width: 30%;
+    background: #1abc9c;
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.footer button:hover {
+    background: #16a085;
+    transform: scale(1.05);
+}
+
+
+
+
+
+
+/* Container and card */
+.report-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.report-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.report-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+}
+
+/* Title and subtitle */
+.report-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1a7a4a;
+}
+
+.report-subtitle {
+  font-size: 0.95rem;
+  color: #5a7060;
+  margin-bottom: 1.5rem;
+}
+
+/* Input fields */
+.report-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.2rem;
+}
+
+.report-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4b5c50;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.report-field input,
+.report-field select,
+.report-field textarea {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  border: 1.5px solid #c8e0d0;
+  background: #f4fbf6;
+  color: #1c2b20;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.report-field input:focus,
+.report-field select:focus,
+.report-field textarea:focus {
+  border-color: #25a863;
+  box-shadow: 0 0 0 3px rgba(37,168,99,0.15);
+  background: #fff;
+}
+
+.report-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Submit button */
+.report-submit {
+  background: linear-gradient(135deg, #1a7a4a 0%, #25a863 100%);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.report-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26,122,74,0.35);
+}
+
+.report-submit:active {
+  transform: translateY(0);
+}
+
+    @media (max-width: 540px) {
+      .form-row { grid-template-columns: 1fr; }
+      .type-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="navbar">
+  <h2>Clean Sri Lanka</h2>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="register.html">Register</a>
+    <a href="#contact">Contact</a>
+  </div>
+</div>
+
+<!-- VIDEO SECTION -->
+<div class="video-section">
+  <video controls autoplay muted loop>
+    <source src="video.mp4" type="video/mp4">
+    Your browser does not support video.
+  </video>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🌿 Matara Municipality</div>
+  <h1>Report <em>Garbage</em><br/>Keep Our City Clean</h1>
+  <p>Spotted illegal dumping, overflowing bins, or waste hazards? Report it in 60 seconds.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statTotal">—</div>
+      <div class="hero-stat-label">Reports</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statResolved">—</div>
+      <div class="hero-stat-label">Resolved</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statPending">—</div>
+      <div class="hero-stat-label">Pending</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TRACK REPORT -->
+  <div class="track-section">
+    <input type="text" id="trackId" placeholder="Track your report — enter Report ID (e.g. R001)" />
+    <button class="btn-track" onclick="trackReport()">Track</button>
+  </div>
+  <div class="track-result" id="trackResult"></div>
+
+  <!-- REPORT FORM -->
+ <div class="report-container">
+  <div class="report-card">
+    <h2 class="report-title">🚨 Submit Your Report</h2>
+    <p class="report-subtitle">Quickly fill out the form to report an issue</p>
+
+    <form id="reportFormNew" action="submit.php" method="POST" enctype="multipart/form-data">
+
+      <div class="report-field">
+        <label for="reportName">Full Name</label>
+        <input type="text" id="reportName" name="name" placeholder="Your Name" required>
+      </div>
+
+      <div class="report-field">
+        <label for="reportLocation">Location</label>
+        <input type="text" id="reportLocation" name="location" placeholder="Your Location" required>
+      </div>
+
+      <div class="report-field">
+        <label for="reportPhone">Phone Number</label>
+        <input type="text" id="reportPhone" name="phone" placeholder="Your Phone" required>
+      </div>
+
+      <div class="report-field">
+        <label for="reportType">Issue Type</label>
+        <select id="reportType" name="issue_type" required>
+          <option value="">-- Select Issue --</option>
+          <option value="Garbage">Garbage</option>
+          <option value="Road Damage">Road Damage</option>
+          <option value="Water Issue">Water Issue</option>
+          <option value="Electricity">Electricity</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="report-field">
+        <label for="reportDesc">Description</label>
+        <textarea id="reportDesc" name="description" placeholder="Describe the issue..." required></textarea>
+      </div>
+
+      <div class="report-field">
+        <label for="reportPhoto">Upload Photo</label>
+        <input type="file" id="reportPhoto" name="photo" required>
+      </div>
+
+      <button type="submit" class="report-submit">Submit Now</button>
+
+    </form>
+  </div>
+</div>
+<div class="footer" id="contact">
+
+<h3>Contact Us</h3>
+
+<p>📞 +94 766016448</p>
+<p>📞 +94 766016897</p>
+<p>📧 cleansrilanka@gmail.com</p>
+
+<h4>Send Message</h4>
+
+<input type="text" placeholder="Your Name"><br>
+<input type="email" placeholder="Your Email"><br>
+<textarea placeholder="Your Message"></textarea><br>
+<button>Send</button>
+
+</div>
+
+<!-- TRAIN EFFECT SCRIPT -->
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">✅</div>
+    <h3>Report Submitted!</h3>
+    <p>Your report has been received. Save your Report ID to track progress:</p>
+    <div class="report-id-display" id="reportIdDisplay">—</div>
+    <p style="font-size:0.8rem; color:var(--muted); margin-bottom:1.5rem;">The municipal team will review within 24 hours.</p>
+    <button class="btn-new" onclick="resetForm()">Submit Another Report</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = 'http://localhost:3000/api';
+
+  // Load stats on page load
+  async function loadStats() {
+    try {
+      const res = await fetch(`${API}/stats`);
+      const data = await res.json();
+      document.getElementById('statTotal').textContent = data.total;
+      document.getElementById('statResolved').textContent = data.resolved;
+      document.getElementById('statPending').textContent = data.pending;
+    } catch (e) {
+      console.log('Could not load stats (backend may be offline)');
+    }
+  }
+
+  // Type selector
+  function selectType(el) {
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('issueType').value = el.dataset.type;
+  }
+
+  // Image preview
+  let imageBase64 = null;
+  function previewImage(input) {
+    if (!input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      imageBase64 = e.target.result;
+      document.getElementById('previewImg').src = imageBase64;
+      document.getElementById('imagePreview').style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  // Track report
+  async function trackReport() {
+    const id = document.getElementById('trackId').value.trim().toUpperCase();
+    if (!id) return showToast('Enter a Report ID', 'error');
+
+    const resultEl = document.getElementById('trackResult');
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = '<em>Searching...</em>';
+    resultEl.style.background = '#f4fbf6';
+
+    try {
+      const res = await fetch(`${API}/reports/${id}`);
+      if (!res.ok) {
+        resultEl.style.background = '#fef2f2';
+        resultEl.innerHTML = `❌ <strong>Report ${id} not found.</strong> Please check the ID.`;
+        return;
+      }
+      const r = await res.json();
+      const statusColor = { pending: '#f59e0b', 'in-progress': '#3b82f6', resolved: '#10b981' }[r.status] || '#6b7280';
+      resultEl.style.background = '#e8f7ef';
+      resultEl.innerHTML = `
+        <strong>📋 ${r.id}</strong> — ${r.type}<br/>
+        📍 ${r.location}<br/>
+        Status: <strong style="color:${statusColor}">${r.status.toUpperCase()}</strong><br/>
+        Submitted: ${new Date(r.timestamp).toLocaleDateString('en-LK', { day:'numeric', month:'short', year:'numeric' })}
+        ${r.notes.length ? '<br/>💬 ' + r.notes[r.notes.length - 1] : ''}
+      `;
+    } catch (e) {
+      resultEl.style.background = '#fef2f2';
+      resultEl.innerHTML = '⚠️ Could not connect to server. Make sure the backend is running.';
+    }
+  }
+
+  // Submit form
+  document.getElementById('reportForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = '⏳ Submitting...';
+    btn.disabled = true;
+
+    const payload = {
+      citizenName: document.getElementById('citizenName').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      location: document.getElementById('location').value.trim(),
+      type: document.getElementById('issueType').value,
+      description: document.getElementById('description').value.trim(),
+      image: imageBase64
+    };
+
+    try {
+      const res = await fetch(`${API}/reports`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast(data.error || 'Submission failed', 'error');
+        return;
+      }
+
+      document.getElementById('reportIdDisplay').textContent = data.report.id;
+      document.getElementById('successOverlay').classList.add('show');
+      loadStats();
+
+    } catch (err) {
+      showToast('⚠️ Cannot connect to server. Is the backend running?', 'error');
+    } finally {
+      btn.textContent = '🚨 Submit Report';
+      btn.disabled = false;
+    }
+  });
+
+  function resetForm() {
+    document.getElementById('reportForm').reset();
+    document.getElementById('issueType').value = 'Illegal Dumping';
+    document.querySelectorAll('.type-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+    document.getElementById('imagePreview').style.display = 'none';
+    imageBase64 = null;
+    document.getElementById('successOverlay').classList.remove('show');
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  // Enter key for track
+  document.getElementById('trackId').addEventListener('keydown', e => {
+    if (e.key === 'Enter') trackReport();
+  });
+
+  loadStats();
+</script>
+</body>
+</html>
